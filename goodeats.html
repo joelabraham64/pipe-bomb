@@ -39,31 +39,14 @@ function saveBookmark(place) {
 
 function loadBookmarks() {
     var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    var bookmarksDiv = document.getElementById('bookmarks');
-    bookmarksDiv.innerHTML = ''; // Clear existing bookmarks display
-
-    bookmarks.forEach(function(bookmark, index) {
-        var div = document.createElement('div');
-        div.textContent = bookmark.name;
-        
-        // Create a delete button for each bookmark
-        var deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = function() {
-            deleteBookmark(index); // Delete bookmark when button is clicked
-        };
-        
-        div.appendChild(deleteBtn);
-        bookmarksDiv.appendChild(div);
+    bookmarks.forEach(function(bookmark) {
+        new google.maps.Marker({
+            map: map,
+            position: {lat: bookmark.lat, lng: bookmark.lng},
+            title: bookmark.name
+        });
     });
 }
-function deleteBookmark(index) {
-    var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    bookmarks.splice(index, 1); // Remove the bookmark at the specified index
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks)); // Update localStorage
-    loadBookmarks(); // Refresh the bookmarks display
-}
-
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
