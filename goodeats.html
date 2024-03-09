@@ -28,8 +28,9 @@
     <script>
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -34.397, lng: 150.644},
-        zoom: 8
+        // Center the map on the United States
+        center: {lat: 39.8283, lng: -98.5795},
+        zoom: 5 // Adjust zoom level as needed
     });
 
     var input = document.getElementById('place-search');
@@ -97,23 +98,6 @@ function initMap() {
     });
 }
 
-function saveBookmark(place) {
-    var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    bookmarks.push({name: place.name, location: place.geometry.location.toString()});
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-}
-
-function loadBookmarks() {
-    var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-    var bookmarksDiv = document.getElementById('bookmarks');
-    bookmarksDiv.innerHTML = ''; // Clear existing bookmarks display
-
-    bookmarks.forEach(function(bookmark) {
-        var div = document.createElement('div');
-        div.textContent = bookmark.name;
-        bookmarksDiv.appendChild(div);
-    });
-}
 </script>
 
 </body>
