@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Simple Map</title>
+  <head>
+    <title>Simple Marker</title>
+    <!-- The callback parameter is required, so we use console.debug as a noop -->
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8UP_CBu3gF5Ft0VtgzZPNOmH3WRyLy8&callback=console.debug&libraries=maps,marker&v=beta">
+    </script>
     <style>
-        /* Style the map to have a width and height */
-        #map {
-            height: 400px;
-            width: 100%;
-        }
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      gmp-map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <gmp-map center="40.12150192260742,-100.45039367675781" zoom="4" map-id="DEMO_MAP_ID">
 
-<h3>My Google Maps Demo</h3>
-<!-- The div element for the map -->
-<div id="map"></div>
-
-<script>
-    // Initialize and add the map
-    function initMap() {
-        // The location of Uluru
-        var uluru = {lat: -25.344, lng: 131.036};
-        // The map, centered at Uluru
-        var map = new google.maps.Map(
-            document.getElementById('map'), {zoom: 4, center: uluru});
-        // The marker, positioned at Uluru
-        var marker = new google.maps.Marker({position: uluru, map: map});
-    }
-</script>
-<!-- Load the API from the specified URL
-* The async attribute allows the browser to render the page while the API loads
-* The key parameter will contain your own API key
-* The callback parameter executes the initMap function -->
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8UP_CBu3gF5Ft0VtgzZPNOmH3WRyLy8&callback=initMap">
-</script>
-</body>
+    </gmp-map>
+  </body>
 </html>
