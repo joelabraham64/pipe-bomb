@@ -26,63 +26,95 @@
     <div id="map"></div>
 
     <script>
-    function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40.12150192260742, lng: -100.45039367675781},
-            zoom: 4
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+    });
+
+    var input = document.getElementById('place-search');
+    var searchBox = new google.maps.places.SearchBox(input);
+
+    map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+    });
+
+    var markers = [];
+    searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+            return;
+        }
+
+        markers.forEach(function(marker) {
+            marker.setMap(null);
         });
+        markers = [];
 
-        var input = document.getElementById('place-search');
-        var searchBox = new google.maps.places.SearchBox(input);
-
-        map.addListener('bounds_changed', function() {
-            searchBox.setBounds(map.getBounds());
-        });
-
-        var markers = [];
-        searchBox.addListener('places_changed', function() {
-            var places = searchBox.getPlaces();
-
-            if (places.length == 0) {
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+            if (!place.geometry) {
+                console.log("Returned place contains no geometry");
                 return;
             }
 
-            markers.forEach(function(marker) {
-                marker.setMap(null);
-            });
-            markers = [];
+            var icon = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+            };
 
-            var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
+            markers.push(new google.maps.Marker({
+                map: map,
+                icon: icon,
+                title: place.name,
+                position: place.geometry.location
+            }));
 
-                var icon = {
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25)
-                };
-
-                markers.push(new google.maps.Marker({
-                    map: map,
-                    icon: icon,
-                    title: place.name,
-                    position: place.geometry.location
-                }));
-
-                if (place.geometry.viewport) {
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
-            });
-            map.fitBounds(bounds);
+            if (place.geometry.viewport) {
+                bounds.union(place.geometry.viewport);
+            } else {
+                bounds.extend(place.geometry.location);
+            }
         });
-    }
-    </script>
+        map.fitBounds(bounds);
+    });
+
+    // Load bookmarks on initial load
+    loadBookmarks();
+
+    // Bookmarking functionality
+    document.getElementById('bookmark-btn').addEventListener('click', function() {
+        var places = searchBox.getPlaces();
+        if (places.length > 0) {
+            var place = places[0]; // Assuming you want to bookmark the first result
+            saveBookmark(place);
+            loadBookmarks(); // Refresh the bookmarks display
+        }
+    });
+}
+
+function saveBookmark(place) {
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+    bookmarks.push({name: place.name, location: place.geometry.location.toString()});
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+}
+
+function loadBookmarks() {
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+    var bookmarksDiv = document.getElementById('bookmarks');
+    bookmarksDiv.innerHTML = ''; // Clear existing bookmarks display
+
+    bookmarks.forEach(function(bookmark) {
+        var div = document.createElement('div');
+        div.textContent = bookmark.name;
+        bookmarksDiv.appendChild(div);
+    });
+}
+</script>
+
 </body>
 </html>
