@@ -1,4 +1,4 @@
-# pipe-bomb
+# Paralign
 this is for the paralign website 
 form uses - https://formspree.io/forms/mzbnvrdn/submissions to collect data
 good eats is for food(google maps api)
